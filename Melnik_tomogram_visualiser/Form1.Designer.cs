@@ -32,6 +32,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.открытьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.rb_quads = new System.Windows.Forms.RadioButton();
+            this.rb_textures = new System.Windows.Forms.RadioButton();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
@@ -71,11 +73,37 @@
             this.trackBar1.TabIndex = 2;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
+            // rb_quads
+            // 
+            this.rb_quads.AutoSize = true;
+            this.rb_quads.Checked = true;
+            this.rb_quads.Location = new System.Drawing.Point(694, 443);
+            this.rb_quads.Name = "rb_quads";
+            this.rb_quads.Size = new System.Drawing.Size(56, 17);
+            this.rb_quads.TabIndex = 3;
+            this.rb_quads.TabStop = true;
+            this.rb_quads.Text = "Quads";
+            this.rb_quads.UseVisualStyleBackColor = true;
+            this.rb_quads.CheckedChanged += new System.EventHandler(this.rb_quads_CheckedChanged);
+            // 
+            // rb_textures
+            // 
+            this.rb_textures.AutoSize = true;
+            this.rb_textures.Location = new System.Drawing.Point(694, 466);
+            this.rb_textures.Name = "rb_textures";
+            this.rb_textures.Size = new System.Drawing.Size(66, 17);
+            this.rb_textures.TabIndex = 4;
+            this.rb_textures.Text = "Textures";
+            this.rb_textures.UseVisualStyleBackColor = true;
+            this.rb_textures.CheckedChanged += new System.EventHandler(this.rb_textures_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 554);
+            this.Controls.Add(this.rb_textures);
+            this.Controls.Add(this.rb_quads);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.glControl1);
             this.Controls.Add(this.menuStrip1);
@@ -96,6 +124,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem открытьToolStripMenuItem;
         private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.RadioButton rb_quads;
+        private System.Windows.Forms.RadioButton rb_textures;
     }
 }
 

@@ -15,17 +15,23 @@ namespace Melnik_tomogram_visualiser
 
         Bin bin;
         View view;
+        bool needReload;
         bool loaded;
+        bool useTexture;
         int currentLayer;
+
+        int frameCount;
+        DateTime nextFPSUpdate = DateTime.Now.AddSeconds(1);
 
         public Form1()
         {
             InitializeComponent();
-            this.Load += Form1_Load1;
             bin = new Bin();
             view = new View();
-            loaded = false;
+            loaded = needReload = useTexture = false;
             currentLayer = 0;
+
+            this.Load += Form1_Load1;
         }
 
         private void Form1_Load1(object sender, EventArgs e)
@@ -52,7 +58,21 @@ namespace Melnik_tomogram_visualiser
         {
             if (loaded)
             {
-                view.DrawQuads(currentLayer);
+                if (useTexture)
+                {
+                    if (needReload)
+                    {
+                        view.generateTextureImage(currentLayer);
+                        view.load2DTexture();
+                        needReload = false;
+                    }
+                    view.drawTexture();
+                }
+                else
+                {
+                    view.DrawQuads(currentLayer);
+                }
+
                 glControl1.SwapBuffers();
             }
         }
@@ -60,6 +80,7 @@ namespace Melnik_tomogram_visualiser
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
             currentLayer = trackBar1.Value;
+            needReload = true;
             glControl1.Invalidate();
         }
 
@@ -67,12 +88,42 @@ namespace Melnik_tomogram_visualiser
         {
             while (glControl1.IsIdle)
             {
+                displayFPS();
                 glControl1.Invalidate();
             }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             Application.Idle += Application_Idle;
+        }
+
+        private void displayFPS()
+        {
+            if(DateTime.Now >= nextFPSUpdate)
+            {
+                this.Text = String.Format("CT Visualizer (fps = {0})", frameCount);
+                nextFPSUpdate = DateTime.Now.AddSeconds(1);
+                frameCount = 0;
+            }
+            frameCount++;
+        }
+
+        private void rb_quads_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rb_quads.Checked)
+            {
+                useTexture = false;
+                needReload = true;
+            }
+        }
+
+        private void rb_textures_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rb_textures.Checked)
+            {
+                useTexture = true;
+                needReload = true;
+            }
         }
     }
 }
