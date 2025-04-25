@@ -26,11 +26,11 @@ namespace Melnik_tomogram_visualiser
             return val;
         }
 
-        public static Color TransferFunc(short val)
+        public static Color TransferFunc(short val, int min, int width)
         {
-            int min = 0;
-            int max = Bin.Z;
-            int res = View.clamp((val - min)*255/(max - min));
+            int _min = min;
+            int max = min + width;
+            int res = View.clamp((val - _min) *255/(max - _min));
             return Color.FromArgb(255, res, res, res);
         }
 
@@ -43,7 +43,7 @@ namespace Melnik_tomogram_visualiser
             GL.Viewport(0, 0, width, height);
         }
 
-        public void DrawQuads(int layerNum)
+        public void DrawQuads(int layerNum, int min, int width)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Begin(BeginMode.Quads);
@@ -54,19 +54,19 @@ namespace Melnik_tomogram_visualiser
                     short val;
 
                     val = Bin.array[x_coord + y_coord * Bin.X + layerNum * Bin.X * Bin.Y];
-                    GL.Color3(TransferFunc(val));
+                    GL.Color3(TransferFunc(val, min, width));
                     GL.Vertex2(x_coord, y_coord);
 
                     val = Bin.array[x_coord + (y_coord + 1) * Bin.X + layerNum * Bin.X * Bin.Y];
-                    GL.Color3(TransferFunc(val));
+                    GL.Color3(TransferFunc(val, min, width));
                     GL.Vertex2(x_coord, y_coord + 1);
 
                     val = Bin.array[(x_coord + 1) + (y_coord + 1) * Bin.X + layerNum * Bin.X * Bin.Y];
-                    GL.Color3(TransferFunc(val));
+                    GL.Color3(TransferFunc(val, min, width));
                     GL.Vertex2(x_coord + 1, y_coord + 1);
 
                     val = Bin.array[(x_coord + 1) + y_coord * Bin.X + layerNum * Bin.X * Bin.Y];
-                    GL.Color3(TransferFunc(val));
+                    GL.Color3(TransferFunc(val, min, width));
                     GL.Vertex2(x_coord + 1, y_coord);
                 }
             }
@@ -97,15 +97,16 @@ namespace Melnik_tomogram_visualiser
             string msg = err.ToString();
         }
 
-        public void generateTextureImage(int layerNum)
+        public void generateTextureImage(int layerNum, int min, int width)
         {
             textureImage = new Bitmap(Bin.X, Bin.Y);
+
             for(int i = 0; i < Bin.X; i++)
             {
                 for(int j = 0; j < Bin.Y; j++)
                 {
                     int pixelNumber = i + j * Bin.X + layerNum * Bin.X * Bin.Y;
-                    textureImage.SetPixel(i, j, TransferFunc(Bin.array[pixelNumber]));
+                    textureImage.SetPixel(i, j, TransferFunc(Bin.array[pixelNumber], min, width));
                 }
             }
         }

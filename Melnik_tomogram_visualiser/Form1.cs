@@ -19,9 +19,10 @@ namespace Melnik_tomogram_visualiser
         bool loaded;
         bool useTexture;
         int currentLayer;
-
+        int minVal;
+        int widthVal;
         int frameCount;
-        DateTime nextFPSUpdate = DateTime.Now.AddSeconds(1);
+        DateTime nextFPSUpdate;
 
         public Form1()
         {
@@ -30,6 +31,9 @@ namespace Melnik_tomogram_visualiser
             view = new View();
             loaded = needReload = useTexture = false;
             currentLayer = 0;
+            nextFPSUpdate = DateTime.Now.AddSeconds(1);
+            minVal = 0;
+            widthVal = 1000;
 
             this.Load += Form1_Load1;
         }
@@ -46,7 +50,7 @@ namespace Melnik_tomogram_visualiser
             if(ofd.ShowDialog() == DialogResult.OK)
             {
                 string name = ofd.FileName;
-                bin.readBinary(name);
+                bin.readBIN(name);
                 view.SetupView(glControl1.Width, glControl1.Height);
                 loaded = true;
                 trackBar1.Maximum = Bin.Z - 1;
@@ -62,7 +66,7 @@ namespace Melnik_tomogram_visualiser
                 {
                     if (needReload)
                     {
-                        view.generateTextureImage(currentLayer);
+                        view.generateTextureImage(currentLayer, minVal, widthVal);
                         view.load2DTexture();
                         needReload = false;
                     }
@@ -70,7 +74,7 @@ namespace Melnik_tomogram_visualiser
                 }
                 else
                 {
-                    view.DrawQuads(currentLayer);
+                    view.DrawQuads(currentLayer, minVal, widthVal);
                 }
 
                 glControl1.SwapBuffers();
@@ -124,6 +128,25 @@ namespace Melnik_tomogram_visualiser
                 useTexture = true;
                 needReload = true;
             }
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            minVal = trackBar2.Value;
+            needReload = true;
+            glControl1.Invalidate();
+        }
+
+        private void trackBar3_Scroll(object sender, EventArgs e)
+        {
+            widthVal = trackBar2.Value;
+            needReload = true;
+            glControl1.Invalidate();
         }
     }
 }
