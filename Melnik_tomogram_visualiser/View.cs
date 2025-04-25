@@ -12,8 +12,8 @@ namespace Melnik_tomogram_visualiser
     internal class View
     {
 
-        int VBOTexture;
-        Bitmap textureImage;
+        int VBOTexture;             //id текстуры в OpenGL
+        Bitmap textureImage;        //растр для текстуры
 
         public View() { }
 
@@ -26,6 +26,7 @@ namespace Melnik_tomogram_visualiser
             return val;
         }
 
+        //воксель -> оттенок серого
         public static Color TransferFunc(short val, int min, int width)
         {
             int _min = min;
@@ -34,6 +35,7 @@ namespace Melnik_tomogram_visualiser
             return Color.FromArgb(255, res, res, res);
         }
 
+        //настройка проекции и области вывода
         public void SetupView(int width, int height)
         {
             GL.ShadeModel(ShadingModel.Smooth);
@@ -43,6 +45,7 @@ namespace Melnik_tomogram_visualiser
             GL.Viewport(0, 0, width, height);
         }
 
+        
         public void DrawQuads(int layerNum, int min, int width)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -54,7 +57,9 @@ namespace Melnik_tomogram_visualiser
                     short val;
 
                     val = Bin.array[x_coord + y_coord * Bin.X + layerNum * Bin.X * Bin.Y];
+                    //получение цвета из значения в массиве
                     GL.Color3(TransferFunc(val, min, width));
+                    //доавление вершины
                     GL.Vertex2(x_coord, y_coord);
 
                     val = Bin.array[x_coord + (y_coord + 1) * Bin.X + layerNum * Bin.X * Bin.Y];
@@ -76,6 +81,7 @@ namespace Melnik_tomogram_visualiser
         public void load2DTexture()
         {
             GL.BindTexture(TextureTarget.Texture2D, VBOTexture);
+
             BitmapData data = textureImage.LockBits(
                 new System.Drawing.Rectangle(0,0,textureImage.Width,textureImage.Height),
                 ImageLockMode.ReadOnly,
@@ -97,6 +103,7 @@ namespace Melnik_tomogram_visualiser
             string msg = err.ToString();
         }
 
+        //растр для слоя из массива данных
         public void generateTextureImage(int layerNum, int min, int width)
         {
             textureImage = new Bitmap(Bin.X, Bin.Y);
@@ -111,6 +118,7 @@ namespace Melnik_tomogram_visualiser
             }
         }
 
+        //выгрузка загруженной текстуры на экран
         public void drawTexture()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
