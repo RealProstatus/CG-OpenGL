@@ -31,8 +31,31 @@ namespace Melnik_tomogram_visualiser
         {
             int _min = min;
             int max = min + width;
-            int res = View.clamp((val - _min) *255/(max - _min));
-            return Color.FromArgb(255, res, res, res);
+
+            if (val < -1000)
+                return Color.Black;
+            if (val > 500)
+                return Color.White;
+
+            if (val <= 0)
+            {
+                float t = (val + 1000) / 1000f;
+                int r = (int)(t * 255);
+                
+                return Color.FromArgb(r, 0, 0);
+            }
+            else
+            {
+                float t = val / 500f;
+                int g = (int)(t * 255);
+                int b = (int)(t * 255);
+
+                return Color.FromArgb(255, g, b);
+            }
+
+
+            //int res = View.clamp((val - _min) *255/(max - _min));
+            //return Color.FromArgb(255, res, res, res);
         }
 
         //настройка проекции и области вывода
